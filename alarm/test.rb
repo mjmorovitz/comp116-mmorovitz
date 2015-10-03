@@ -8,19 +8,18 @@ stream.start
 
 sleep 3
 stream.save
-puts "I AM PRINTING CORRECTLY";
-puts stream.stream;
+
+
 # figure out how to do this for each packet
 stream.stream.each do |raw|
 packet = PacketFu::Packet.parse(packet = raw)
     protocol = packet.proto();  
-puts "prottotype is" 
-length =  packet.proto().length
- protocol = packet.proto();  
 
-    if (protocol[length - 1] == "TCP")
-    puts "THINK THIS IS TCP"
-puts packet.kind_of? PacketFu::TCPPacket
+ protocol = packet.proto()[-1]
+puts 
+    if (protocol == "TCP")
+   puts 
+   puts packet.payload.index(/nmap/i)
   end
 end
 
