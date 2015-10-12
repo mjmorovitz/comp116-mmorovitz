@@ -22,7 +22,7 @@ while true
                 if (input == "1")
                     valid_input = true;
                     #using wlan cause I dont have packets on eth0
-                    stream = PacketFu::Capture.new(:start => true, :iface => 'wlan0', :promisc => true)
+                    stream = PacketFu::Capture.new(:start => true, :iface => 'eth0', :promisc => true)
                     data = stream.stream
                 elsif (input == "2")
                     valid_input = true
@@ -58,14 +58,14 @@ while true
 	                inc_num += 1;
 	                write_alert(inc_num, "Xmas scan", src , protocol, payload);
 	            end
-                if ( packet.payload.index(/nmap/i) != nil)
+                if ( packet.payload.scan(/\x4e\x6d\x61\x70/) )
                     inc_num += 1; 
                 end
-                if ( packet.payload.index(/nikto/i) != nil)
+                if ( packet.payload.scan(/\x4e\x69\x6b\x74\x6f/) )
                     inc_num += 1; 
                     write_alert(inc_num, "Nikto scan", src , protocol, payload);
                 end
-                if (packet.payload.index(/\b(?:4[0-9]{12}(?:[0-9]{3})?|5[12345][0-9]{14}|3[47][0-9]{13}|3(?:0[012345]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35[0-9]{3})[0-9]{11})\b/) != nil)
+                if (packet.payload.scan(/\b(?:4[0-9]{12}(?:[0-9]{3})?|5[12345][0-9]{14}|3[47][0-9]{13}|3(?:0[012345]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35[0-9]{3})[0-9]{11})\b/) )
                     inc_num += 1;
                     write_alert(inc_num, "Credit Card numbers in plain text", src, protocol, payload);
                 end
@@ -76,33 +76,39 @@ while true
         puts "No scans or other malicious acts detected"
      end
      elsif (input == "2")
-        inc_num = 0;
+        inc_num = 0
         f = File.open("access.log", "r")
         f.each_line do |line|
+	ip = ""
+	i = 0
+	while line[i] != " " do
+		ip = ip + line[i];
+		i += 1;
+	end
             if (line.index(/phpmyadmin/i) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "phpMyAdmin detected", "", "", line)
+                write_alert(inc_num, "phpMyAdmin detected", ip, "", "")
             end
              if (line.index(/masscan/i) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "Masscan detected", "", "", line)
+                write_alert(inc_num, "Masscan detected",  ip, "", "")
             end
               if (line.index(/nikto/i) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "Nikto scan detected", "", "", line)
+                write_alert(inc_num, "Nikto scan detected",  ip, "", "")
              end
               if (line.index(/nmap/i) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "NMAP detected", "", "", line)
+                write_alert(inc_num, "NMAP detected",  ip, "", "")
              end
                if (line.index(/{ :;}/) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "Shellshock vulnerability scan detected", "", "", line)
+                write_alert(inc_num, "Shellshock vulnerability scan detected",  ip, "", "")
              end
              
               if (line.index(/\\[xX][0-9a-fA-F]+/) != nil)
                 inc_num += 1;
-                write_alert(inc_num, "Shellcode detected", "", "", line)
+                write_alert(inc_num, "Shellcode detected", ip, "", "")
              end
              
         end
