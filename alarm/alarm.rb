@@ -60,6 +60,7 @@ while true
 	            end
                 if ( packet.payload.scan(/\x4e\x6d\x61\x70/) )
                     inc_num += 1; 
+			write_alert(inc_num, "Nmap scan", src, protocol, payload);
                 end
                 if ( packet.payload.scan(/\x4e\x69\x6b\x74\x6f/) )
                     inc_num += 1; 
