@@ -78,7 +78,8 @@ while true
      end
      elsif (input == "2")
         inc_num = 0
-        f = File.open("access.log", "r")
+	puts "Input file to read"
+        f = File.open(gets.chomp, "r")
         f.each_line do |line|
 	ip = ""
 	i = 0
