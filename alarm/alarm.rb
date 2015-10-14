@@ -58,11 +58,11 @@ while true
 	                inc_num += 1;
 	                write_alert(inc_num, "Xmas scan", src , protocol, payload);
 	            end
-                if ( packet.payload.scan(/\x4e\x6d\x61\x70/) )
+                if ( packet.payload.scan( /\x4E\x6D\x61\x70/) )
                     inc_num += 1; 
 			write_alert(inc_num, "Nmap scan", src, protocol, payload);
                 end
-                if ( packet.payload.scan(/\x4e\x69\x6b\x74\x6f/) )
+                if ( packet.payload.scan( /\x4E\x69\x6B\x74\x6F/) )
                     inc_num += 1; 
                     write_alert(inc_num, "Nikto scan", src , protocol, payload);
                 end
